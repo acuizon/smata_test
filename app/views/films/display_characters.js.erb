@@ -1,0 +1,4 @@
+<% if @char_names.present? %>
+  var target = document.getElementById("characters");
+  target.innerHTML = "<%= j render partial: 'characters', locals: { characters: @char_names } %>";
+<% end %>

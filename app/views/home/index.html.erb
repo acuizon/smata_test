@@ -1,0 +1,135 @@
+<div class="row">
+  <div class="col-12">
+    <div class="bg-light p-4 rounded border">
+      <h5 class="mb-4">
+        <div class="float-left">FILMS</div>
+        <div class="float-right">
+          <%= form_tag "/search", method: :get do %>
+            Search for title: <%= text_field_tag "title", params[:title] %>
+            <%= submit_tag "Go", class: "btn btn-primary" %>
+            <%= link_to "Clear", "/", class: "btn btn-info" %>
+          <% end %>
+        </div>
+        <div class="clearfix"></div>
+      </h5>
+      <%# @films.in_groups_of(3, false).each do |group| %>
+        <div class="row mb-3" id="card-container">
+          <%# group.each do |film| %>
+          <% @films.each do |film| %>
+            <div class="col-4 cards" data-episode="<%= film['episode_id'] %>">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= link_to film["title"], show_film_path(id: film["title"].parameterize) %>
+                  </h5>
+                  <p class="card-text">
+                    Episode#<%= film["episode_id"] %>
+                  </p>
+                  <p class="card-text">
+                    <%= film["opening_crawl"] %>
+                  </p>
+                  <%= link_to "More info", show_film_path(id: film["title"].parameterize) %>
+                  <br>
+                  <%= button_tag "Like", type: "button", class: "like-btn btn btn-primary", data: { episode: film["episode_id"] } %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>  
+      <%# end %>
+    </div>
+    
+  </div>
+</div>
+
+<% content_for :modals do %>
+  <div class="modal" tabindex="-1" role="dialog" id="like-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thank you!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>You have liked a film.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% content_for :footer_scripts do %>
+  <script>
+    sortCards();
+
+    var likeButtons = document.getElementsByClassName("like-btn")
+    for(var likeButton of likeButtons) {
+      likeButton.addEventListener("click", function() {
+        updateFavorites(this.dataset.episode, this.innerHTML);
+        if(this.innerHTML == "Like") {
+          $("#like-modal").modal('show');
+          this.innerHTML = "Unlike"
+        } else {
+          this.innerHTML = "Like";
+        }
+        sortCards();
+      });
+    }
+
+    function sortCards() {
+      var cardContainer = document.getElementById("card-container");
+      var cards = document.getElementsByClassName("cards");
+      var favoritedCards = [];
+      var storedFave = retrieveFavorites();
+
+      var episodes = [];
+      for(var card of cards) {
+        episodes.push(card.dataset.episode);
+      }
+
+      for(var episode of episodes.sort().reverse()) {
+        var card = document.querySelector("div[data-episode='" + episode + "']");
+        cardContainer.insertBefore(card, cardContainer.children[0]);
+      }
+
+      if(storedFave.length > 0) {
+        for(var fave of storedFave.reverse()) {
+          var card = document.querySelector("div[data-episode='" + fave + "']");
+          var button = card.querySelector("button");
+          button.innerHTML = "Unlike";
+
+          cardContainer.insertBefore(card, cardContainer.children[0]);
+        }  
+      }
+    };
+
+    function updateFavorites(episode, action) {
+      var storedFave = retrieveFavorites();
+
+      if(action == "Like") {
+        storedFave.push(episode);
+      } else {
+        deleteIndex = storedFave.indexOf(episode);
+        storedFave.splice(deleteIndex, 1);
+      }
+      
+      localStorage.setItem("favorites", JSON.stringify(storedFave.sort()));
+    }
+
+    function retrieveFavorites() {
+      var favorites;
+      if(localStorage.getItem("favorites") == null) {
+        favorites = [];
+      } else {
+        favorites = JSON.parse(localStorage.getItem("favorites"));
+      }
+
+      return favorites;
+    }
+  </script>
+<% end %>

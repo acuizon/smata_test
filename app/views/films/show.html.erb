@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-12">
+    <div class="bg-light p-4 rounded border">
+      <h5 class="mb-4">FILM</h5>
+      <% if @film.present? %>
+        <div class="card">
+          <img src="" class="card-img-top" alt="">
+          <div class="card-body">
+            <h5 class="card-title">
+              <%= @film["title"] %>
+            </h5>
+            <p class="card-text">
+              Episode#<%= @film["episode_id"] %>
+            </p>
+            <p class="card-text">
+              <%= @film["opening_crawl"] %>
+            </p>
+            <p class="card-text">
+              Director: <%= @film["director"] %><br>
+              Producer: <%= @film["producer"] %><br>
+              Date Released: <%= @film["release_date"] %><br>
+            </p>
+            <%# cache("characters-#{@film['episode_id']}-#{Date.today.to_s}") do %>
+              <p class="card-text">
+                Cast of characters:
+                <div id="characters">
+                  <%= render partial: "list", locals: { items: get_characters(@film), type: "People" } %>
+                </div>
+              </p>
+            <%# end %>
+            <p class="card-text">
+              Planets in this film:
+              <div id="planets">
+                <%= render partial: "list", locals: { items: get_planets(@film), type: "Planets" } %>
+              </div>
+            </p>
+            <p class="card-text">
+              Character race:
+              <div id="species">
+                <%= render partial: "list", locals: { items: get_species(@film), type: "Species" } %>
+              </div>
+            </p>
+            <p class="card-text">
+              Starships:
+              <div id="starships">
+                <%= render partial: "list", locals: { items: get_starships(@film), type: "Starships" } %>
+              </div>
+            </p>
+            <p class="card-text">
+              Vehicles:
+              <div id="vehicles">
+                <%= render partial: "list", locals: { items: get_vehicles(@film), type: "Vehicles" } %>
+              </div>
+            </p>
+            <%= link_to "Visit the hypermedia url", @film["url"], target: "_blank" %>
+          </div>
+        </div>
+      <% else %>
+        We couldn't find the film you're trying to view.
+      <% end %>
+
+      <%= link_to "Back", root_path %>
+    </div>
+  </div>
+</div>
