@@ -12,31 +12,31 @@
         </div>
         <div class="clearfix"></div>
       </h5>
-      <%# @films.in_groups_of(3, false).each do |group| %>
-        <div class="row mb-3" id="card-container">
-          <%# group.each do |film| %>
-          <% @films.each do |film| %>
-            <div class="col-4 cards" data-episode="<%= film['episode_id'] %>">
-              <div class="card mb-4">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <%= link_to film["title"], show_film_path(id: film["title"].parameterize) %>
-                  </h5>
-                  <p class="card-text">
-                    Episode#<%= film["episode_id"] %>
-                  </p>
-                  <p class="card-text">
-                    <%= film["opening_crawl"] %>
-                  </p>
-                  <%= link_to "More info", show_film_path(id: film["title"].parameterize) %>
-                  <br>
-                  <%= button_tag "Like", type: "button", class: "like-btn btn btn-primary", data: { episode: film["episode_id"] } %>
-                </div>
+      
+      <div class="row mb-3" id="card-container">
+        
+        <% @films.each do |film| %>
+          <div class="col-4 cards" data-episode="<%= film['episode_id'] %>">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title" data-toggle="tooltip" data-placement="top" title="<%= tooltip_data(film, 'Film') %>">
+                  <%= link_to film["title"], show_film_path(id: film["title"].parameterize) %>
+                </h5>
+                <p class="card-text">
+                  Episode#<%= film["episode_id"] %>
+                </p>
+                <p class="card-text">
+                  <%= film["opening_crawl"] %>
+                </p>
+                <%= link_to "More info", show_film_path(id: film["title"].parameterize) %>
+                <br>
+                <%= button_tag "Like", type: "button", class: "like-btn btn btn-primary", data: { episode: film["episode_id"] } %>
               </div>
             </div>
-          <% end %>
-        </div>  
-      <%# end %>
+          </div>
+        <% end %>
+      </div>  
+      
     </div>
     
   </div>
@@ -100,10 +100,12 @@
       if(storedFave.length > 0) {
         for(var fave of storedFave.reverse()) {
           var card = document.querySelector("div[data-episode='" + fave + "']");
-          var button = card.querySelector("button");
-          button.innerHTML = "Unlike";
+          if(card) {
+            var button = card.querySelector("button");
+            button.innerHTML = "Unlike";
 
-          cardContainer.insertBefore(card, cardContainer.children[0]);
+            cardContainer.insertBefore(card, cardContainer.children[0]);  
+          }
         }  
       }
     };

@@ -20,14 +20,12 @@
               Producer: <%= @film["producer"] %><br>
               Date Released: <%= @film["release_date"] %><br>
             </p>
-            <%# cache("characters-#{@film['episode_id']}-#{Date.today.to_s}") do %>
-              <p class="card-text">
-                Cast of characters:
-                <div id="characters">
-                  <%= render partial: "list", locals: { items: get_characters(@film), type: "People" } %>
-                </div>
-              </p>
-            <%# end %>
+            <p class="card-text">
+              Cast of characters:
+              <div id="characters">
+                <%= render partial: "list", locals: { items: get_characters(@film), type: "People" } %>
+              </div>
+            </p>
             <p class="card-text">
               Planets in this film:
               <div id="planets">

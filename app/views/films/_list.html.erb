@@ -5,32 +5,9 @@
         <div class="col-3">
           <ul>
             <% group.each do |i| %>
-              <% case type %>
-                <% when "People" %>
-                  <li data-toggle="tooltip" data-placement="top" title="<%= ['Birth year: ' + i['birth_year'], 'Eyes: ' + i['eye_color'], 'Gender: ' + i['gender'], 'Hair: ' + i['hair_color'], 'Height: ' + i['height'], 'Weight: ' + i['mass'], 'Skin: ' + i['skin_color']].join('<br/>') %>">
-                    <%= i["name"] %>
-                  </li>
-                <% when "Planets" %>
-                  <li><%= i["name"] %></li>
-                <% when "Species" %>
-                  <li>
-                    <%= i["name"] %>
-                    (<%= i["classification"] %>)
-                    (<%= i["designation"] %>)
-                  </li>
-                <% when "Starships" %>
-                  <li>
-                    <%= i["name"] %>
-                    (<%= i["model"] %>)
-                    (<%= i["starship_class"] %>)
-                  </li>
-                <% when "Vehicles" %>
-                  <li>
-                    <%= i["name"] %>
-                    (<%= i["model"] %>)
-                    (<%= i["vehicle_class"] %>)
-                  </li>
-              <% end %>
+              <li data-toggle="tooltip" data-placement="top" title="<%= tooltip_data(i, type) %>">
+                <%= i["name"] %>
+              </li>
             <% end %>
           </ul>
         </div>
